@@ -19,7 +19,6 @@ jobs:
             
       - name: Download key pair file
         run: |
-          mkdir ~/.ssh
           echo "${{ secrets.EC2_KEY_PAIR }}" > ~/.ssh/key_pair.pem
           chmod 600 ~/.ssh/key_pair.pem
 
