@@ -1,52 +1,29 @@
-name: Deploy Docker Image
+name: Login to EC2 instance, pull image and run container
 on:
   push:
     branches: [ "main" ]
-  pull_request:
 
 jobs:
-  deploy:
+  login:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Set up SSH keys 🔑
-        uses: webfactory/ssh-agent@v0.7.0
-        with: 
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-            
-      - name: Download key pair file
-        run: |
-          echo "${{ secrets.EC2_KEY_PAIR }}" > ~/.ssh/key_pair.pem
-          chmod 600 ~/.ssh/key_pair.pem
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          accessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: us-east-1
           
-      - name: Upload private key as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: private-key
-          path: ~/.ssh/key_pair.pem
-
-      - name: Download private key artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: private-key
-          path: ~/.ssh/
-
-      - name: Check contents of ~/.ssh/
-        run: ls -la ~/.ssh/
-
-      - name: Connect to EC2 instance
+      - name: Login to EC2 instance
         run: |
-          chmod 600 ~/.ssh/key_pair.pem
-
-          ssh -i ~/.ssh/key_pair.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
-          sudo yum update -y
-          EOF
-      
+          ssh -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} ec2-user@${{ secrets.AWS_EC2_INSTANCE_HOST }}
+            
       - name: Pull Docker image
-        run: docker pull olixc/apache-webapp  
-
+        run: docker pull olixc/apache-webapp
+        
       - name: Run Docker Container
         run: docker run -d -p 80:80 olixc/apache-webapp
