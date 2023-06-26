@@ -18,9 +18,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           
-      - name: Login to EC2 instance
-        run: |
-          ssh -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} ec2-user@${{ secrets.AWS_EC2_INSTANCE_HOST }}
+          # Assume the my-github-actions-role role.
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          
+      # - name: Login to EC2 instance
+        # run: |
+          # ssh -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} ec2-user@${{ secrets.AWS_EC2_INSTANCE_HOST }}
             
       - name: Pull Docker image
         run: docker pull olixc/apache-webapp
