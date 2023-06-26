@@ -24,7 +24,6 @@ jobs:
         run: |
           ssh -i ${{ env.KEY_PATH }} ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
           sudo yum update -y
-          EOF
       
       - name: Pull Docker image
         run: docker pull olixc/apache-webapp  
