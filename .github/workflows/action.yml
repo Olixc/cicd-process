@@ -19,7 +19,7 @@ jobs:
           aws-region: us-east-1
           
           # Assume the my-github-actions-role role.
-          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           
       # - name: Login to EC2 instance
         # run: |
