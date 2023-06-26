@@ -17,10 +17,11 @@ jobs:
         with: 
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
             
-      - name: Download key pair file
-        run: |
-          echo "${{ secrets.EC2_KEY_PAIR }}" > ~/.ssh/key_pair.pem
-          chmod 600 ~/.ssh/key_pair.pem
+      - name: Download private key artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: private-key
+          path: ~/.ssh/
           
       - name: Upload private key as artifact
         uses: actions/upload-artifact@v3
@@ -35,8 +36,6 @@ jobs:
 
       - name: Connect to EC2 instance
         run: |
-          mkdir -p ~/.ssh
-          mv private-key/key_pair.pem ~/.ssh/
           chmod 600 ~/.ssh/key_pair.pem
 
           ssh -i ~/.ssh/key_pair.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
