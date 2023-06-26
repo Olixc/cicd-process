@@ -16,13 +16,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with: 
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
-      - name: Set private key permissions
-        run: chmod 600 /home/olix/key_pair_2.pem
 
       - name: Connect to EC2 instance
         run: |
-          ssh -i /home/olix/key_pair_2.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+          ssh -i {{ secrets.EC2_KEY_PAIR }} ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
           sudo yum update -y
           EOF
       
