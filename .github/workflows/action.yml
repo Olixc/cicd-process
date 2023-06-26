@@ -21,10 +21,21 @@ jobs:
         run: |
           echo "${{ secrets.EC2_KEY_PAIR }}" > ~/.ssh/key_pair.pem
           chmod 600 ~/.ssh/key_pair.pem
+          
+      - name: Upload private key as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: private-key
+          path: ~/.ssh/key_pair.pem
+
+      - name: Download private key artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: private-key
 
       - name: Connect to EC2 instance
         run: |
-          ssh -i ${{ secrets.EC2_KEY_PAIR }} ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+          ssh -i private-key/key_pair.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
           sudo yum update -y
           EOF
       
