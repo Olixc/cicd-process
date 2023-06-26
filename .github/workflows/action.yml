@@ -19,7 +19,7 @@ jobs:
 
       - name: Connect to EC2 instance
         run: |
-          ssh -i {{ secrets.EC2_KEY_PAIR }} ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+          ssh -i ${{ secrets.EC2_KEY_PAIR }} ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
           sudo yum update -y
           EOF
       
