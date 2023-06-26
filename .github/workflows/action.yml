@@ -16,6 +16,9 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with: 
             ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+          
+      - name: Set private key permissions
+        run: chmod 600 ${{ env.KEY_PATH }}
 
       - name: Connect to EC2 instance
         run: |
