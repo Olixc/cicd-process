@@ -1,0 +1,32 @@
+name: Deploy Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull:
+    branches:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH keys 🔑
+        uses: webfactory/ssh-agent@v0.7.0
+          with:
+            ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Connect to EC2 instance
+        run: ssh -i ${{ env.KEY_PATH }} ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+
+        EOF
+      
+      - name: Pull Docker image
+        run: docker pull olixc/apache-webapp  
+
+      - name: Run Docker Container
+        run: docker run -d -p 80:80 olixc/apache-webapp
