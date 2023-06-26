@@ -35,7 +35,11 @@ jobs:
 
       - name: Connect to EC2 instance
         run: |
-          ssh -i private-key/key_pair.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+          mkdir -p ~/.ssh
+          mv private-key/key_pair.pem ~/.ssh/
+          chmod 600 ~/.ssh/key_pair.pem
+
+          ssh -i ~/.ssh/key_pair.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
           sudo yum update -y
           EOF
       
