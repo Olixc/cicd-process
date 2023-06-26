@@ -15,7 +15,7 @@ jobs:
       - name: Set up SSH keys 🔑
         uses: webfactory/ssh-agent@v0.7.0
         with: 
-            ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           
       - name: Set private key permissions
         run: chmod 600 ${{ env.KEY_PATH }}
